@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-for="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./static/images/cloudy.svg">
+
+    <!-- 引入 Bootstrap -->
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+<!--导航栏-->
+<nav id="header" class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <img src="static/images/sunny.svg" height="50" width="50" align="left">
+            <img src="static/images/logo.png" height="50" width="120" align="left">
+            <!--                <a class="navbar-brand" href="#">Brand</a>-->
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="fileUpload" class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="#" data-toggle="modal" data-target="#myModal"><span
+                        class="glyphicon glyphicon-cloud-upload"></span>&nbsp;上传文件</a></li>
+                <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" style="pointer-events:auto">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                    &times;
+                                </button>
+                                <h5 class="modal-title" id="myModalLabel">
+                                    文件上传
+                                </h5>
+                            </div>
+                            <div class="modal-body">
+                                <form enctype="multipart/form-data">
+                                    <input type="file" ref="file">
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="dismissUpload" type="button" class="btn btn-default" data-dismiss="modal">
+                                    关闭
+                                </button>
+                                <button @click="upload()" type="button" class="btn btn-primary"
+                                        v-bind:disabled="canNot">
+                                    {{uploadProcess}}
+                                </button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search" style="color: #204d74"></span>
+                </button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li v-html="person"></li>
+                <!--                <li><a href="/MyNetDisk/login">注册 / 登录</a></li>-->
+                <!--                <img src="static/images/sunny-night.svg" height="50" width="50">-->
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="col-sm-2">
+    <div style="text-align: center">
+        <img src="static/images/cold-rain.svg" width=110" height="110" style="text-align: center">
+    </div>
+    <hr>
+    <ul class="nav nav-pills nav-stacked">
+        <li role="presentation" class="active"><a href="#"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;&nbsp;所有文件</a>
+        </li>
+        <li role="presentation"><a href="#"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;&nbsp;文档</a></li>
+        <li role="presentation"><a href="#"><span class="glyphicon glyphicon-picture"></span>&nbsp;&nbsp;&nbsp;图片</a>
+        </li>
+        <li role="presentation"><a href="#"><span class="glyphicon glyphicon-music"></span>&nbsp;&nbsp;&nbsp;音乐</a></li>
+        <li role="presentation"><a href="#"><span class="glyphicon glyphicon-film"></span>&nbsp;&nbsp;&nbsp;视频</a></li>
+    </ul>
+</div>
+
+<br>&nbsp;&nbsp;
+
+
+<div id="operate" class="col-sm-10">
+
+    <div>
+        <button class="btn btn-danger" @click="removeUserFiles()"><span class="glyphicon glyphicon-trash"></span>&nbsp;删除</button>
+        <button class="btn btn-primary" @click="downloadUserFiles()"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;下载</button>
+        <button class="btn btn-success"><span class="glyphicon glyphicon-book"></span>&nbsp;复制</button>
+        <button class="btn btn-info"><span class="glyphicon glyphicon-log-in"></span>&nbsp;移动</button>
+        <button class="btn btn-warning"><span class="glyphicon glyphicon-edit"></span>&nbsp;重命名</button>&nbsp;
+    </div>
+
+    <br><br><br>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>选中</th>
+            <th>文件名</th>
+            <th>大小</th>
+            <th>时间</th>
+            <th>类型</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <div>
+            <tr style="font-size: small" v-for="(userfile,index) in arr">
+                <th scope="row"><input type="checkbox" name="userfile" v-bind:value="userfile.file_link+'&&file_id='+userfile.id+'&&originalFilename='+userfile.file_name" v-model="optionfiles"></th>
+                <td>{{userfile.file_name}}</td>
+                <td>{{userfile.file_size}}</td>
+                <td>{{userfile.file_time}}</td>
+                <td>&nbsp;&nbsp;<span v-bind:class="userfile.file_icon" style="color: #2e6da4"></span></td>
+            </tr>
+        </div>
+
+        </tbody>
+    </table>
+
+    <div style="position:absolute;bottom:0;width:100%;height:0px;text-align: center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li>
+                    <a @click="getPrePage()" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li @click="skipPage(index)" v-for="(array,index) in totalPage"
+                    v-bind:class="{active:currentPage==index}"><a>{{index+1}}</a></li>
+                <li>
+                    <a @click="getNextPage()" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+<script src="static/js/vue.js"></script>
+<script src="static/js/axios.min.js"></script>
+<script src="static/js/vue-cookies.js"></script>
+<script src="static/js/index.js"></script>
+<script src="static/js/jquery.min.js"></script>
+<script src="static/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>

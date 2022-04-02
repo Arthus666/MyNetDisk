@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./static/images/cloudy.svg" >
+
+    <!-- 引入 Bootstrap -->
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!--<a href="/MyNetDisk">-->
+<!--    <img src="static/images/backTag.png" alt="" height="25" width="30">-->
+<!--</a>-->
+
+<div id="login" align="center">
+    <br><br><br>
+    <img src="static/images/day-cloudy.svg" alt="图片加载失败" width="100" height="100">
+    <h3>LOGIN</h3><br>
+    <form id="loginForm" class="bs-example bs-example-form" data-example-id="input-group-sizing" style="width: 250px">
+
+        <input v-model="user.username" type="text" class="form-control" maxlength="255" placeholder="用户名或邮箱" aria-describedby="sizing-addon2">
+        <br>
+        <input v-model="user.password" type="password" class="form-control" maxlength="16" placeholder="密码" aria-describedby="sizing-addon2">
+
+        <br>
+
+        <table border="0">
+            <td>
+                <input v-model="user.captcha" type="text" class="form-control" maxlength="4" placeholder="验证码" aria-describedby="sizing-addon2">
+            </td>
+            
+            <td>
+                <img v-bind:src="easyCaptcha" @click="getCaptcha()"  alt="" width="90" height="30">
+            </td>
+        </table>
+        <br>
+    </form>
+
+    <button @click="loginClick()" class="btn btn-primary" style="width: 80px;height:40px">登录</button>
+    &nbsp;
+    <button @click="toLogon()" class="btn btn-danger" style="width: 80px;height:40px">注册</button>
+
+</div>
+
+<script src="static/js/axios.min.js"></script>
+<script src="static/js/vue.js"></script>
+<script src="static/js/login.js"></script>
+
+</body>
+</html>
